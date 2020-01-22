@@ -34,17 +34,17 @@ managerQuestions = [{
     {
         type: "input",
         message: "What is the Manager's ID?",
-        name: "managerId",
+        name: "managerid",
     },
     {
         type: "input",
         message: "What is the Manager's Email?",
-        name: "managerEmail",
+        name: "manageremail",
     },
     {
         type: "input",
         message: "What is the Manager's Office Number?",
-        name: "officeNumber",
+        name: "officenumber",
     }
 ]
 
@@ -57,17 +57,17 @@ teamQuestions = [{
     {
         type: "input",
         message: "What is the employee's name?",
-        name: "employeeName",
+        name: "employeename",
     },
     {
         type: "input",
         message: "What is the employee's ID?",
-        name: "employeeId",
+        name: "employeeid",
     },
     {
         type: "input",
         message: "What is the employee's Email?",
-        name: "employeeEmail",
+        name: "employeeemail",
     },
     {
         type: "input",
@@ -84,5 +84,59 @@ teamQuestions = [{
 ]
 
 //================================
+//functions to help the async init
+//===============================
+// function pushToArray(member) {
+//     teamMember
+// }
+
+
+
+//================================
 //Init function to run the program
 //================================
+async function init() {
+    console.log("============================================Starting Team Generator ==========================================")
+    let teamMembers = [];
+
+    try {
+        //prompt user with Manager questions
+        const managerResponse = await inquirer.prompt(managerQuestions);
+        const teamName = managerResponse.teamname;
+        const managerName = managerResponse.managername;
+        const managerId = managerResponse.managerid;
+        const managerEmail = managerResponse.manageremail;
+        const officeNumber = managerResponse.officeNumber;
+
+        //create a new manager and add them to teamMember array
+        const manager = new Manager(managerName, managerId, managerEmail, officeNumber);
+        teamMembers.push(manager);
+
+        //prompt user with team building questions
+        const userResponse = await inquirer.prompt(teamQuestions);
+        const role = userResponse.role;
+        const employeeName = userResponse.employeename;
+        const employeeId = userResponse.employeeid;
+        const employeeEmail = userResponse.employeeemail;
+        const github = userResponse.github;
+        const school = userResponse.school;
+
+        //create either new engineer or intern
+        if (role === "Engineer") {
+            const engineer = new Engineer(employeeName, employeeId, employeeEmail, github);
+            teamMembers.push(engineer);
+        } else {
+            const intern = new Intern(employeeName, employeeId, employeeEmail, school);
+            teamMembers.push(intern);
+        }
+
+        //test to see if these objects get created
+        console.log(teamName);
+        console.log(teamMembers);
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+init();
