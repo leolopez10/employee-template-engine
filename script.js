@@ -80,63 +80,86 @@ teamQuestions = [{
         message: "Which university is your Intern attending?",
         when: (userResponse) => userResponse.role === "Intern",
         name: "school",
-    }
+    },
 ]
 
-//================================
-//functions to help the async init
-//===============================
-// function pushToArray(member) {
-//     teamMember
-// }
+addMemberQuestion = {
+        type: "confirm",
+        message: "Would you like to add another employee to the team?",
+        name: "additonalmember"
+    },
+
+    //================================
+    //functions to help the async init
+    //===============================
 
 
 
-//================================
-//Init function to run the program
-//================================
-async function init() {
-    console.log("============================================Starting Team Generator ==========================================")
-    let teamMembers = [];
 
-    try {
-        //prompt user with Manager questions
-        const managerResponse = await inquirer.prompt(managerQuestions);
-        const teamName = managerResponse.teamname;
-        const managerName = managerResponse.managername;
-        const managerId = managerResponse.managerid;
-        const managerEmail = managerResponse.manageremail;
-        const officeNumber = managerResponse.officeNumber;
+    //================================
+    //Init function to run the program
+    //================================
+    async function init() {
+        console.log("============================================Starting Team Generator ==========================================")
+        let teamMembers = [];
 
-        //create a new manager and add them to teamMember array
-        const manager = new Manager(managerName, managerId, managerEmail, officeNumber);
-        teamMembers.push(manager);
+        try {
+            //prompt user with Manager questions
+            const managerResponse = await inquirer.prompt(managerQuestions);
+            const teamName = managerResponse.teamname;
+            const managerName = managerResponse.managername;
+            const managerId = managerResponse.managerid;
+            const managerEmail = managerResponse.manageremail;
+            const officeNumber = managerResponse.officeNumber;
 
-        //prompt user with team building questions
-        const userResponse = await inquirer.prompt(teamQuestions);
-        const role = userResponse.role;
-        const employeeName = userResponse.employeename;
-        const employeeId = userResponse.employeeid;
-        const employeeEmail = userResponse.employeeemail;
-        const github = userResponse.github;
-        const school = userResponse.school;
+            //create a new manager and add them to teamMember array
+            const manager = new Manager(managerName, managerId, managerEmail, officeNumber);
+            teamMembers.push(manager);
 
-        //create either new engineer or intern
-        if (role === "Engineer") {
-            const engineer = new Engineer(employeeName, employeeId, employeeEmail, github);
-            teamMembers.push(engineer);
-        } else {
-            const intern = new Intern(employeeName, employeeId, employeeEmail, school);
-            teamMembers.push(intern);
+            //prompt user with team building questions
+            const userResponse = await inquirer.prompt(teamQuestions);
+            const role = userResponse.role;
+            const employeeName = userResponse.employeename;
+            const employeeId = userResponse.employeeid;
+            const employeeEmail = userResponse.employeeemail;
+            const github = userResponse.github;
+            const school = userResponse.school;
+            const additonalMember = userResponse.additonalmember;
+
+            //create either new engineer or intern
+            if (role === "Engineer") {
+                const engineer = new Engineer(employeeName, employeeId, employeeEmail, github);
+                teamMembers.push(engineer);
+            } else if (role === "Intern") {
+                const intern = new Intern(employeeName, employeeId, employeeEmail, school);
+                teamMembers.push(intern);
+            }
+
+            //loop through the prompt again if user decides to add another member
+            if (additonalMember === true) {
+                userResponse = await inquirer.prompt(teamQuestions);
+                if (userResponse.role === "Engineer") {
+                    const engineer = new Engineer(employeeName, employeeId, employeeEmail, github);
+                    teamMembers.push(engineer);
+                } else if (userResponse.role === "Intern") {
+                    const intern = new Intern(employeeName, employeeId, employeeEmail, school);
+                    teamMembers.push(intern);
+                }
+
+
+            } else {
+                console.log("Please wait as we build your team");
+            }
+
+            //test to see if these objects get created
+            console.log(teamName);
+            console.log(teamMembers);
+
+
+
+        } catch (err) {
+            console.log(err);
         }
-
-        //test to see if these objects get created
-        console.log(teamName);
-        console.log(teamMembers);
-
-    } catch (err) {
-        console.log(err);
     }
-}
 
 init();
