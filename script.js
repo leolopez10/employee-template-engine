@@ -21,8 +21,9 @@ const Manager = require("./lib/Manager");
 //===========================================
 //Variables to store information from function
 //===========================================
-let teamMembers = [];
+const teamMembers = [];
 let teamName;
+let manager;
 
 //=========
 //questions
@@ -108,8 +109,8 @@ function managerData() {
             const officeNumber = managerResponse.officeNumber;
 
             //create a new manager and add them to teamMember array
-            const manager = new Manager(managerName, managerId, managerEmail, officeNumber);
-            teamMembers.push(manager);
+            manager = new Manager(managerName, managerId, managerEmail, officeNumber);
+            // teamMembers.push(manager);
             teamData();
         })
 }
@@ -143,17 +144,17 @@ function teamData() {
                 //===============
 
                 //render manager
-                let managerCard = readFileAsync("./html-templates/manager.html", "utf8");
-                renderManagerCard(managerCard);
+                renderManagerCard(manager);
 
                 //render team
                 for (var i = 0; i < teamMembers.length; i++) {
                     let employee = teamMembers[i];
-                    return cards += renderEmployeeCard(employee);
+                    cards += renderEmployeeCard(employee);
                 }
 
+
                 //read main html and place employee cards into main html
-                let main = readFileAsync("./html-templates/main.html", "utf8");
+                let main = fs.readFileSync("./html-templates/main.html", "utf8");
                 main = main.replace(/{{teamTitle}}/g, teamName);
                 main = main.replace("{{cards}}", cards);
 
@@ -167,36 +168,43 @@ function teamData() {
 //functions to render data
 //========================
 
-//Render manager card
-
-function renderManagerCard(managerCard) {
-    managerCard = managerCard.replace("{{name}}", Manager.getName());
-    managerCard = managerCard.replace("{{role}}", Manager.getRole());
-    managerCard = managerCard.replace("{{id}}", Manager.getId());
-    managerCard = managerCard.replace("{{email}}", Manager.getEmail());
-    managerCard = managerCard.replace("{{officeNumber}}", Manager.getOfficeNumber());
-    return managerCard;
+//render manager card
+function renderManagerCard(manager) {
+    let managerCard = fs.readFileSync("./html-templates/manager.html", "utf8");
+    managerCard = managerCard.replace("{{name}}", manager.getName());
+    managerCard = managerCard.replace("{{role}}", manager.getRole());
+    managerCard = managerCard.replace("{{id}}", manager.getId());
+    managerCard = managerCard.replace("{{email}}", manager.getEmail());
+    managerCard = managerCard.replace("{{officeNumber}}", manager.getOfficeNumber());
+    cards = managerCard;
+    return cards
 }
 
+//render employee cards
 function renderEmployeeCard(employee) {
     if (employee.getRole() === "Engineer") {
-        let internCard = readFileAsync("./html-templates/engineer.html", "utf8");
-        engineerCard = engineerCard.replace("{{name}}", Engineer.getName());
-        engineerCard = engineerCard.replace("{{role}}", Engineer.getRole());
-        engineerCard = engineerCard.replace("{{id}}", Engineer.getId());
-        engineerCard = engineerCard.replace("{{email}}", Engineer.getEmail());
-        engineerCard = engineerCard.replace("{{github}}", Engineer.getGithub());
+        let engineerCard = fs.readFileSync("./html-templates/engineer.html", "utf8");
+        engineerCard = engineerCard.replace("{{name}}", employee.getName());
+        engineerCard = engineerCard.replace("{{role}}", employee.getRole());
+        engineerCard = engineerCard.replace("{{id}}", employee.getId());
+        engineerCard = engineerCard.replace("{{email}}", employee.getEmail());
+        engineerCard = engineerCard.replace("{{github}}", employee.getGithub());
         return engineerCard;
     } else if (employee.getRole() === "Intern") {
-        let internCard = readFileAsync("./html-templates/intern.html", "utf8");
-        internCard = internCard.replace("{{name}}", Intern.getName());
-        internCard = internCard.replace("{{role}}", Intern.getRole());
-        internCard = internCard.replace("{{id}}", Intern.getId());
-        internCard = internCard.replace("{{email}}", Intern.getEmail());
-        internCard = internCard.replace("{{school}}", Intern.getSchool());
+        let internCard = fs.readFileSync("./html-templates/intern.html", "utf8");
+        internCard = internCard.replace("{{name}}", employee.getName());
+        internCard = internCard.replace("{{role}}", employee.getRole());
+        internCard = internCard.replace("{{id}}", employee.getId());
+        internCard = internCard.replace("{{email}}", employee.getEmail());
+        internCard = internCard.replace("{{school}}", employee.getSchool());
         return internCard;
     }
 }
+
+//render teamhtml
+
+
+managerData();
 
 
 
