@@ -99,14 +99,14 @@ teamQuestions = [{
 //=================================
 //functions to create employee data
 //=================================
-function managerData() {
+function init() {
     inquirer.prompt(managerQuestions)
         .then(managerResponse => {
             teamName = managerResponse.teamname;
             const managerName = managerResponse.managername;
             const managerId = managerResponse.managerid;
             const managerEmail = managerResponse.manageremail;
-            const officeNumber = managerResponse.officeNumber;
+            const officeNumber = managerResponse.officenumber;
 
             //create a new manager and add them to teamMember array
             manager = new Manager(managerName, managerId, managerEmail, officeNumber);
@@ -139,9 +139,6 @@ function teamData() {
             if (additonalMember === true) {
                 teamData();
             } else {
-                //===============
-                //render the team
-                //===============
 
                 //render manager
                 renderManagerCard(manager);
@@ -151,7 +148,6 @@ function teamData() {
                     let employee = teamMembers[i];
                     cards += renderEmployeeCard(employee);
                 }
-
 
                 //read main html and place employee cards into main html
                 let main = fs.readFileSync("./html-templates/main.html", "utf8");
@@ -201,68 +197,4 @@ function renderEmployeeCard(employee) {
     }
 }
 
-//render teamhtml
-
-
-managerData();
-
-
-
-//================================
-//Init function to run the program
-//================================
-// async function init() {
-//     console.log("============================================Starting Team Generator ==========================================")
-//     let teamMembers = [];
-
-//     try {
-//         //prompt user with Manager questions
-//         const managerResponse = await inquirer.prompt(managerQuestions);
-//         const teamName = managerResponse.teamname;
-//         const managerName = managerResponse.managername;
-//         const managerId = managerResponse.managerid;
-//         const managerEmail = managerResponse.manageremail;
-//         const officeNumber = managerResponse.officeNumber;
-
-//         //create a new manager and add them to teamMember array
-//         const manager = new Manager(managerName, managerId, managerEmail, officeNumber);
-//         teamMembers.push(manager);
-
-//         //prompt user with team building questions
-//         const userResponse = await inquirer.prompt(teamQuestions);
-//         const role = userResponse.role;
-//         const employeeName = userResponse.employeename;
-//         const employeeId = userResponse.employeeid;
-//         const employeeEmail = userResponse.employeeemail;
-//         const github = userResponse.github;
-//         const school = userResponse.school;
-//         const additonalMember = userResponse.additonalmember;
-
-//         //create either new engineer or intern
-//         if (role === "Engineer") {
-//             const engineer = new Engineer(employeeName, employeeId, employeeEmail, github);
-//             teamMembers.push(engineer);
-//         } else if (role === "Intern") {
-//             const intern = new Intern(employeeName, employeeId, employeeEmail, school);
-//             teamMembers.push(intern);
-//         }
-
-//         //prompt user to add another member
-//         if (additonalMember === true) {
-
-//         }
-
-
-
-//         //test to see if these objects get created
-//         console.log(teamName);
-//         console.log(teamMembers);
-
-
-
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-// init();
+init();
