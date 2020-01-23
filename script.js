@@ -1,5 +1,5 @@
 //================
-//npms
+//Dependencies
 //================
 const fs = require("fs");
 const inquirer = require("inquirer");
@@ -95,9 +95,9 @@ teamQuestions = [{
 ]
 
 
-//================================
-//functions to help the async init
-//===============================
+//=================================
+//functions to create employee data
+//=================================
 function managerData() {
     inquirer.prompt(managerQuestions)
         .then(managerResponse => {
@@ -138,18 +138,68 @@ function teamData() {
             if (additonalMember === true) {
                 teamData();
             } else {
+                //===============
                 //render the team
+                //===============
 
-                // console.log(teamName);
-                // console.log(teamMembers);
+                //render manager
+                let managerCard = readFileAsync("./html-templates/manager.html", "utf8");
+                renderManagerCard(managerCard);
+
+                //render team
+                for (var i = 0; i < teamMembers.length; i++) {
+                    let employee = teamMembers[i];
+                    return cards += renderEmployeeCard(employee);
+                }
+
+                //read main html and place employee cards into main html
+                let main = readFileAsync("./html-templates/main.html", "utf8");
+                main = main.replace(/{{teamTitle}}/g, teamName);
+                main = main.replace("{{cards}}", cards);
+
+                //Write new html and create path to output folder
+                writeFileAsync("./output/teampage.html", main);
             }
         })
 }
 
-console.log(teamMembers);
+//=========================
+//functions to render data
+//========================
+
+//Render manager card
+
+function renderManagerCard(managerCard) {
+    managerCard = managerCard.replace("{{name}}", Manager.getName());
+    managerCard = managerCard.replace("{{role}}", Manager.getRole());
+    managerCard = managerCard.replace("{{id}}", Manager.getId());
+    managerCard = managerCard.replace("{{email}}", Manager.getEmail());
+    managerCard = managerCard.replace("{{officeNumber}}", Manager.getOfficeNumber());
+    return managerCard;
+}
+
+function renderEmployeeCard(employee) {
+    if (employee.getRole() === "Engineer") {
+        let internCard = readFileAsync("./html-templates/engineer.html", "utf8");
+        engineerCard = engineerCard.replace("{{name}}", Engineer.getName());
+        engineerCard = engineerCard.replace("{{role}}", Engineer.getRole());
+        engineerCard = engineerCard.replace("{{id}}", Engineer.getId());
+        engineerCard = engineerCard.replace("{{email}}", Engineer.getEmail());
+        engineerCard = engineerCard.replace("{{github}}", Engineer.getGithub());
+        return engineerCard;
+    } else if (employee.getRole() === "Intern") {
+        let internCard = readFileAsync("./html-templates/intern.html", "utf8");
+        internCard = internCard.replace("{{name}}", Intern.getName());
+        internCard = internCard.replace("{{role}}", Intern.getRole());
+        internCard = internCard.replace("{{id}}", Intern.getId());
+        internCard = internCard.replace("{{email}}", Intern.getEmail());
+        internCard = internCard.replace("{{school}}", Intern.getSchool());
+        return internCard;
+    }
+}
 
 
-managerData();
+
 //================================
 //Init function to run the program
 //================================
