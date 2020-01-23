@@ -5,11 +5,10 @@ const fs = require("fs");
 const inquirer = require("inquirer");
 const util = require("util");
 
-//======================
-//writing files promises
-//======================
+//==========================
+//Promises
+//==========================
 const writeFileAsync = util.promisify(fs.writeFileSync);
-const readFileAsync = util.promisify(fs.readFileSync);
 
 //============================
 //attach classes for employees
@@ -25,9 +24,9 @@ const teamMembers = [];
 let teamName;
 let manager;
 
-//=========
+//============================
 //questions
-//=========
+//============================
 managerQuestions = [{
         type: "input",
         message: "Let's start a project. What is the team name?",
@@ -110,7 +109,6 @@ function init() {
 
             //create a new manager and add them to teamMember array
             manager = new Manager(managerName, managerId, managerEmail, officeNumber);
-            // teamMembers.push(manager);
             teamData();
         })
 }
@@ -139,7 +137,6 @@ function teamData() {
             if (additonalMember === true) {
                 teamData();
             } else {
-
                 //render manager
                 renderManagerCard(manager);
 
